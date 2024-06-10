@@ -1,10 +1,11 @@
 
 version = "1.0-SNAPSHOT"
-
 plugins {
     id("java")
     id("application")
-}
+
+    id("org.danilopianini.unibo-oop-gradle-plugin") version "1.0.13"}
+
 
 repositories {
     mavenCentral()
@@ -32,3 +33,4 @@ dependencies {
 application {
     mainClass.set("it.unibo.grubclash.model.Implementation.Main")
 }
+ java { toolchain { languageVersion.set(JavaLanguageVersion.of(17)) } }
