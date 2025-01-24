@@ -1,30 +1,32 @@
 package it.unibo.grubclash.model.Implementation;
 import java.util.Optional;
 
-import it.unibo.grubclash.controller.Application_Programming_Interface.PlayerInterface;
-import it.unibo.grubclash.model.Application_Programming_Interface.EntityInterface;
+import it.unibo.grubclash.controller.Application_Programming_Interface.Player;
+import it.unibo.grubclash.controller.Implementation.PlayerImpl;
+import it.unibo.grubclash.model.Application_Programming_Interface.Entity;
 import it.unibo.grubclash.model.Application_Programming_Interface.ProjectileType;
-import it.unibo.grubclash.model.Implementation.EnumEntity.entities;
-import it.unibo.grubclash.model.Implementation.EnumEntity.orientation;
-import it.unibo.grubclash.view.Implementation.Projectile;
+import it.unibo.grubclash.model.Implementation.EnumEntity.Entities;
+import it.unibo.grubclash.model.Implementation.EnumEntity.Orientation;
+import it.unibo.grubclash.model.Implementation.EnumEntity.Status;
+import it.unibo.grubclash.view.Implementation.ProjectileImpl;
 
-public class ProjectileRoket extends Projectile implements ProjectileType {
+public class ProjectileRoket extends ProjectileImpl implements ProjectileType {
 
     private int dmgRadius = 50;
     private static int widthRoket = 10;
     private static int heightRoket = 10;
     private int speed = 10;
-    private PlayerInterface owner;
+    private PlayerImpl owner;
 
-    public ProjectileRoket(int x, int y, PlayerInterface owner) {
-        super(x, y, getWidthRoket(), getHeightRoket(), entities.PROJECTILE); 
+    public ProjectileRoket(int x, int y, PlayerImpl owner) {
+        super(x, y, getWidthRoket(), getHeightRoket(), Entities.PROJECTILE); 
         this.owner = owner;
-        gravity = false;
+        setGravity(false);
         Allowed.addDynamicEntity(Optional.of(this));
     }   
 
     @Override
-    public PlayerInterface getOwner() {
+    public Player getOwner() {
         return owner;
     }
 
@@ -37,31 +39,31 @@ public class ProjectileRoket extends Projectile implements ProjectileType {
 
     @Override
     public void update () {
-        orientation dir = owner.getWeapon().get().getShootingDir();
+        Orientation dir = owner.getWeapon().get().getShootingDir();
         
-        if(this.working == EnumEntity.status.ALIVE){
-            if (dir == orientation.LEFT) {
+        if(this.isAlive()){
+            if (dir == Orientation.LEFT) {
                 if(Allowed.gonnaExplode(updatedDir (dir), getY(), getWidthRoket(), getHeightRoket(), owner)){
                     explosionHappening();
                 }else{
                     setX(updatedDir (dir)); 
                 }  
             }
-            else if (dir == orientation.RIGHT) {
+            else if (dir == Orientation.RIGHT) {
                 if(Allowed.gonnaExplode(updatedDir (dir), getY(), getWidthRoket(), getHeightRoket(), owner)){
                     explosionHappening();
                 }else{
                     setX(updatedDir (dir)); 
                 } 
             }
-            else if (dir == orientation.UP || dir == orientation.UP2) {
+            else if (dir == Orientation.UP || dir == Orientation.UP2) {
                 if(Allowed.gonnaExplode(getX(), updatedDir (dir), getWidthRoket(), getHeightRoket(), owner)){
                     explosionHappening();
                 }else{
                     setY(updatedDir (dir)); 
                 }  
             }
-            else if (dir == orientation.DOWN) {
+            else if (dir == Orientation.DOWN) {
                 if(Allowed.gonnaExplode(getX(), updatedDir (dir), getWidthRoket(), getHeightRoket(), owner)){
                     explosionHappening();
                 }else{
@@ -74,13 +76,12 @@ public class ProjectileRoket extends Projectile implements ProjectileType {
     private void explosionHappening () {
         Sound.setFile(0);
         Sound.play();
-        EntityInterface damage = damage(dmgRadius);
+        Entity damage = damage(dmgRadius);
         Allowed.applyDamage(Allowed.dealDamage(damage.getX(), damage.getY(), damage.getWidth(), damage.getHeight()), 2);
-        this.working = EnumEntity.status.DEAD;
+        this.setWorking(Status.DEAD);
     }
 
-    // personalizzata per ogni proiettile
-    private int updatedDir (orientation dir) {
+    private int updatedDir (Orientation dir) {
         switch (dir) {
             case UP:
                 return getY() - speed;

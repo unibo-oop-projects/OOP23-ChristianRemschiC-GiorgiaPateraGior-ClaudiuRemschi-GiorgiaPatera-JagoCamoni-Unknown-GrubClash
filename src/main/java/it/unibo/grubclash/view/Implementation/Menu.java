@@ -1,6 +1,6 @@
 package it.unibo.grubclash.view.Implementation;
 
-import it.unibo.grubclash.controller.Implementation.MapBuilder;
+import it.unibo.grubclash.controller.Implementation.MapBuilderImpl;
 import it.unibo.grubclash.view.Application_Programming_Interface.FrameManager;
 
 import javax.swing.*;
@@ -14,24 +14,45 @@ public class Menu extends JFrame{
 
     private static final FrameManager frameManager = FrameManagerImpl.getInstance();
 
-    final char FS = File.separatorChar;
-    JComboBox<Integer> playerSelect;
+    private final char FS = File.separatorChar;
+    private JComboBox<Integer> playerSelect;
+
+    //Setting the Menu Background
+    private static final int newX=0;
+    private static final int newY=0;
+
+    //Pixel removal Insert the combobox (playerSelect) in the right place
+    private static final int removePixelsPlayerSelectX = 950;
+    private static final int removePixelsPlayerSelectY = 455;
+    private static final int widthPlayerSelect = 200;
+    private static final int heightPlayerSelect = 30;
+
+    //Pixel removal Insert the PlayButton in the right place
+    private static final int removePixelsPlayButtonX = 1150;
+    private static final int removePixelsPlayButtonY = 350;
+    private static final int widthPlayButton = 200;
+    private static final int heightPlayButton = 200;
+
+    //Pixel removal Insert the play2 (Jbutton) in the right place
+    private static final int removePixelsPlay2X = 100;
+    private static final int widthPlay2 = 100;
+    private static final int heightPlay2 = 100;
 
     public Menu() {
 
         JFrame frameMenu = createMenuFrame();
         JPanel panel = createMenuPanel(frameMenu);
 
-        //Impostazione dello sfondo del menu
         ImageIcon image = new ImageIcon("src" + FS + "main" + FS + "resources" + FS + "menu" + FS + "menu_bg.jpg");
         JLabel menu_bg = new JLabel(image);
-        menu_bg.setBounds(0, 0, frameManager.getWindowWidth().get(), frameManager.getWindowHeight().get());
+        menu_bg.setBounds(newX, newY, frameManager.getWindowWidth().get(), frameManager.getWindowHeight().get());
 
-        //Creazione del bottone play
+        //Creating the play button
         JButton playButton = createPlayButton(frameMenu);
 
+
         playerSelect = new JComboBox<>(new Integer[]{2, 3, 4, 5});
-        playerSelect.setBounds(frameManager.getWindowWidth().get()-950, frameManager.getWindowHeight().get()-455, 200, 30);
+        playerSelect.setBounds(frameManager.getWindowWidth().get()-removePixelsPlayerSelectX, frameManager.getWindowHeight().get() - removePixelsPlayerSelectY, widthPlayerSelect, heightPlayerSelect);
 
         panel.add(playButton);
         panel.add(playerSelect);
@@ -53,15 +74,16 @@ public class Menu extends JFrame{
     protected JPanel createMenuPanel(JFrame frameMenu) {
         JPanel panel = new JPanel();
         panel.setLayout(null);
-        panel.setBounds(0, 0, frameManager.getWindowWidth().get(), frameManager.getWindowHeight().get());
+        panel.setBounds(newX, newY, frameManager.getWindowWidth().get(), frameManager.getWindowHeight().get());
         frameMenu.add(panel);
         return panel;
     }
 
     protected JButton createPlayButton(JFrame frameMenu) {
         JButton playButton = new JButton();
+
         playButton.setBorderPainted(false);
-        playButton.setBounds(frameManager.getWindowWidth().get() - 1150, frameManager.getWindowHeight().get() - 350, 200, 200);
+        playButton.setBounds(frameManager.getWindowWidth().get() - removePixelsPlayButtonX, frameManager.getWindowHeight().get() - removePixelsPlayButtonY, widthPlayButton, heightPlayButton);
 
         ImageIcon originalIcon = new ImageIcon("src" + FS + "main" + FS + "resources" + FS + "menu" + FS + "play.png");
         Image originalImage = originalIcon.getImage();
@@ -70,9 +92,9 @@ public class Menu extends JFrame{
 
         playButton.addActionListener(e -> {
             frameMenu.dispose();
-            JFrame frameMappa = createMenuFrame();
-            createMapPanel(frameMappa);
-            frameMappa.setVisible(true);
+            JFrame frameMap = createMenuFrame();
+            createMapPanel(frameMap);
+            frameMap.setVisible(true);
         });
 
         playButton.addMouseListener(new MouseAdapter() {
@@ -96,19 +118,21 @@ public class Menu extends JFrame{
         return playButton;
     }
 
-    protected JPanel createMapPanel(JFrame frameMappa) {
-        JPanel panelMappa = new JPanel();
-        panelMappa.setLayout(null);
-        panelMappa.setBackground(Color.WHITE);
-        panelMappa.setBounds(0, 0, frameManager.getWindowWidth().get(), frameManager.getWindowHeight().get());
+    protected JPanel createMapPanel(JFrame frameMap) {
+        JPanel panelMap = new JPanel();
 
-        ImageIcon mappa = new ImageIcon("src" + FS + "main" + FS + "resources" + FS + "menu" + FS + "grubRules.png");
-        JLabel mappa_label = new JLabel(mappa);
-        mappa_label.setBounds(0, 0, frameManager.getWindowWidth().get(), frameManager.getWindowHeight().get());
+        panelMap.setLayout(null);
+        panelMap.setBackground(Color.WHITE);
+        panelMap.setBounds(newX, newY, frameManager.getWindowWidth().get(), frameManager.getWindowHeight().get());
+
+        ImageIcon map = new ImageIcon("src" + FS + "main" + FS + "resources" + FS + "menu" + FS + "grubRules.png");
+        JLabel map_label = new JLabel(map);
+        map_label.setBounds(newX, newY, frameManager.getWindowWidth().get(), frameManager.getWindowHeight().get());
 
         JButton play2 = new JButton();
+
         play2.setBorderPainted(false);
-        play2.setBounds((frameManager.getWindowWidth().get() / 2) - 100, 0, 100, 100);
+        play2.setBounds((frameManager.getWindowWidth().get() / 2) - removePixelsPlay2X, newY, widthPlay2, heightPlay2);
         ImageIcon originalIcon2 = new ImageIcon("src" + FS + "main" + FS + "resources" + FS + "menu" + FS + "play2.png");
         play2.setIcon(originalIcon2);
 
@@ -127,7 +151,7 @@ public class Menu extends JFrame{
         });
 
         play2.addActionListener(b -> {
-            frameMappa.dispose();
+            frameMap.dispose();
             Object player = playerSelect.getSelectedItem();
             int playerCount = 0;
             if (player != null) {
@@ -136,13 +160,13 @@ public class Menu extends JFrame{
                 System.out.println("Errore nella selezione del player");
                 System.exit(1);
             }
-            new MapBuilder(playerCount);
+            new MapBuilderImpl(playerCount);
         });
 
-        panelMappa.add(play2);
-        panelMappa.add(mappa_label);
-        frameMappa.add(panelMappa);
+        panelMap.add(play2);
+        panelMap.add(map_label);
+        frameMap.add(panelMap);
 
-        return panelMappa;
+        return panelMap;
     }
 }

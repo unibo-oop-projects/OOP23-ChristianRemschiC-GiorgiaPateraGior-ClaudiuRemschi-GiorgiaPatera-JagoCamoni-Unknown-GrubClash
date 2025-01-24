@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 
-import it.unibo.grubclash.controller.Implementation.GrubPanel;
-import it.unibo.grubclash.controller.Implementation.MapBuilder;
+import it.unibo.grubclash.controller.Implementation.GrubPanelImpl;
+import it.unibo.grubclash.controller.Implementation.MapBuilderImpl;
 import it.unibo.grubclash.view.Application_Programming_Interface.FrameManager;
 import it.unibo.grubclash.view.Application_Programming_Interface.UIInterface;
 
@@ -13,22 +13,30 @@ public class UI implements UIInterface {
 
     private static final FrameManager frameManager = FrameManagerImpl.getInstance();
 
-    String color_game = "#EF7B10";
+    private String color_game = "#EF7B10";
 
-    GrubPanel grubPanel;
-    Graphics2D g2d;
-    public Font snapITCFont;
+    private GrubPanelImpl grubPanel;
+    private Graphics2D g2d;
+    private Font snapITCFont;
 
-    public UI(GrubPanel grubPanel2){
+    //Font
+    private static final int FONT_SIZE = 24;
+
+    //where the number of ammo is shown on the screen
+    private static final int AMMO_X=50;
+    private static final int AMMO_Y=50;
+
+    public UI(GrubPanelImpl grubPanel2){
 
         this.grubPanel = grubPanel2;
-
-        //Font
-        snapITCFont = new Font("Snap ITC", Font.BOLD, 24);
+        snapITCFont = new Font("Snap ITC", Font.BOLD, FONT_SIZE);
 
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void draw(Graphics2D g2d){
 
@@ -43,30 +51,40 @@ public class UI implements UIInterface {
 
     }
 
+
+    /**
+     * Draw the player's turn and the seconds of the turn
+     */
     private void drawPlayerTurn() {
         
-        g2d.drawString("TURNO DEL GIOCATORE N\u00B0: " + (grubPanel.numPlayerTurn + 1) , frameManager.getWindowWidth().get()/3, 45);
-        g2d.drawRect(MapBuilder.getXMapBase(0, 19), MapBuilder.getYMapBase(0, 19), MapBuilder.getWidthMapBase(0,19), MapBuilder.getHeightMapBase(0,19));
+        g2d.drawString("TURNO DEL GIOCATORE N\u00B0: " + (grubPanel.getNumPlayerTurn() + 1) , frameManager.getWindowWidth().get()/3, 45);
+        g2d.drawRect(MapBuilderImpl.getXMapBase(0, 19), MapBuilderImpl.getYMapBase(0, 19), MapBuilderImpl.getWidthMapBase(0,19), MapBuilderImpl.getHeightMapBase(0,19));
         g2d.setFont(snapITCFont.deriveFont(30f));
-        if(grubPanel.secondsTurn < 10){
-            g2d.drawString("0" + grubPanel.secondsTurn, MapBuilder.getXMapBase(0, 19)+MapBuilder.getWidthMapBase(0,19)*2/7, MapBuilder.getYMapBase(0, 19)+MapBuilder.getHeightMapBase(0,19)*2/3);
+        if(grubPanel.getSecondsTurn() < 10){
+            g2d.drawString("0" + grubPanel.getSecondsTurn(), MapBuilderImpl.getXMapBase(0, 19)+MapBuilderImpl.getWidthMapBase(0,19)*2/7, MapBuilderImpl.getYMapBase(0, 19)+MapBuilderImpl.getHeightMapBase(0,19)*2/3);
         }else{
-            g2d.drawString("" + grubPanel.secondsTurn, MapBuilder.getXMapBase(0, 19)+MapBuilder.getWidthMapBase(0,19)*2/7, MapBuilder.getYMapBase(0, 19)+MapBuilder.getHeightMapBase(0,19)*2/3);
+            g2d.drawString("" + grubPanel.getSecondsTurn(), MapBuilderImpl.getXMapBase(0, 19)+MapBuilderImpl.getWidthMapBase(0,19)*2/7, MapBuilderImpl.getYMapBase(0, 19)+MapBuilderImpl.getHeightMapBase(0,19)*2/3);
         }
     }
     
+    /**
+     * He says that shift is about to start
+     */
     private void drawTurnBegin(){
 
-        if(grubPanel.turnBegin){
+        if(grubPanel.isTurnBegin()){
             g2d.setFont(snapITCFont.deriveFont(40f));
-            g2d.drawString("STA PER INIZIARE IL TURNO DI: " + (grubPanel.numPlayerTurn + 1), frameManager.getWindowWidth().get()/4, frameManager.getWindowHeight().get()/4);
+            g2d.drawString("STA PER INIZIARE IL TURNO DI: " + (grubPanel.getNumPlayerTurn()+1), frameManager.getWindowWidth().get()/4, frameManager.getWindowHeight().get()/4);
         }
     }
 
+    /**
+     * Tells the number of ammo of the player on that turn
+     */
     private void drawAmmos(){
 
         g2d.setFont(snapITCFont.deriveFont(25f));
-        g2d.drawString("MUNIZIONI: " + grubPanel.players.get(grubPanel.numPlayerTurn).getWeapon().get().getAmmo(), 50, 50);
+        g2d.drawString("MUNIZIONI: " + grubPanel.getPlayers().get(grubPanel.getNumPlayerTurn()).getWeapon().get().getAmmo(), AMMO_X, AMMO_Y);
     }
 
 }

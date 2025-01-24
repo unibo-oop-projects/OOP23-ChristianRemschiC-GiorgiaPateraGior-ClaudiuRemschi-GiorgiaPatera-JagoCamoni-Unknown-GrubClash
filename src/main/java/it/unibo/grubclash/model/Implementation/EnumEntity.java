@@ -2,11 +2,11 @@ package it.unibo.grubclash.model.Implementation;
 
 import java.util.Optional;
 
-import it.unibo.grubclash.controller.Implementation.MapBuilder;
+import it.unibo.grubclash.controller.Implementation.MapBuilderImpl;
 
 public class EnumEntity {
 
-    public enum entities {
+    public enum Entities {
         PLAYER1,
         PLAYER2,
         PLAYER3,
@@ -20,16 +20,18 @@ public class EnumEntity {
         EXPLOSION,
         GUN,
         ITEM,
-        PROJECTILE;   
+        PROJECTILE,
+        MOBGENERATOR,
+        SKELETON,
+        ZOMBIE;   
     }
 
-    public enum weapons {
-        GRANADE,
-        ROKET,
+    public enum Weapons {
+        GRANADE, 
         HITSCAN;
     }
     
-    public enum orientation {
+    public enum Orientation {
         UP,
         UP2,
         DOWN,
@@ -37,42 +39,59 @@ public class EnumEntity {
         RIGHT;
     }
 
-    public enum status {
+    public enum Status {
         ALIVE,
         DEAD;
     }
 
-    public static Optional<entities> idToEntitiesConverter(int id){
+    /**
+     * 
+     * @param id of the player 
+     * @return the player enum
+     */
+    public static Optional<Entities> idToEntitiesConverter(int id){
 
         return switch (id) {
-            case 0 -> Optional.ofNullable(entities.PLAYER1);
-            case 1 -> Optional.ofNullable(entities.PLAYER2);
-            case 2 -> Optional.ofNullable(entities.PLAYER3);
-            case 3 -> Optional.ofNullable(entities.PLAYER4);
-            case 4 -> Optional.ofNullable(entities.PLAYER5);
+            case 0 -> Optional.ofNullable(Entities.PLAYER1);
+            case 1 -> Optional.ofNullable(Entities.PLAYER2);
+            case 2 -> Optional.ofNullable(Entities.PLAYER3);
+            case 3 -> Optional.ofNullable(Entities.PLAYER4);
+            case 4 -> Optional.ofNullable(Entities.PLAYER5);
             default -> Optional.empty();
         };
 
     }
 
-    public static int buttonToCoordsXConverter(entities[][] entities, entities player){
+    /**
+     * 
+     * @param entities
+     * @param player
+     * @return the coord x of the player in the map
+     */
+    public static int buttonToCoordsXConverter(Entities[][] entities, Entities player){
         int x = 0;
-        for(int i = 0; i < MapBuilder.COLS; i++){
-            for(int j = 0; j < MapBuilder.ROWS; j++){
+        for(int i = 0; i < MapBuilderImpl.COLS; i++){
+            for(int j = 0; j < MapBuilderImpl.ROWS; j++){
                 if(entities[i][j].equals(player)){
-                    x = MapBuilder.getXMapBase(i, j);
+                    x = MapBuilderImpl.getXMapBase(i, j);
                 }
             }
         }
         return x;
     }
 
-    public static int buttonToCoordsYConverter(entities[][] entities, entities player){
+     /**
+     * 
+     * @param entities
+     * @param player
+     * @return the coord y of the player in the map
+     */
+    public static int buttonToCoordsYConverter(Entities[][] entities, Entities player){
         int y = 0;
-        for(int i = 0; i < MapBuilder.COLS; i++){
-            for(int j = 0; j < MapBuilder.ROWS; j++){
+        for(int i = 0; i < MapBuilderImpl.COLS; i++){
+            for(int j = 0; j < MapBuilderImpl.ROWS; j++){
                 if(entities[i][j].equals(player)){
-                    y = MapBuilder.getYMapBase(i, j);
+                    y = MapBuilderImpl.getYMapBase(i, j);
                 }
             }
         }

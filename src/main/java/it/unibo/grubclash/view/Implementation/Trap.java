@@ -5,32 +5,38 @@ import java.io.File;
 import java.util.Optional;
 
 import it.unibo.grubclash.model.Implementation.Allowed;
-import it.unibo.grubclash.model.Implementation.Entity;
+import it.unibo.grubclash.model.Implementation.EntityImpl;
 import it.unibo.grubclash.model.Implementation.EnumEntity;
-import it.unibo.grubclash.model.Implementation.EnumEntity.status;
 
-public class Trap extends Entity{
+public class Trap extends EntityImpl{
 
-    final char FS = File.separatorChar;
+    private final char FS = File.separatorChar;
 
-    public BufferedImage stand1;
+    private BufferedImage stand1;
+    private static final int WIDTH_TRAP=20;
+    private static final int HEIGHT_TRAP=20;
+
+    //Pixel removal Insert the Trap in the right place
+    private static final int REMOVE_PIXELS_WIDTH = 23;
+    private static final int REMOVE_PIXELS_HEIGHT = 23;
 
     public Trap(int x, int y) {
 
-        super(x, y, 20, 20, EnumEntity.entities.TRAP);
+        super(x, y, WIDTH_TRAP, HEIGHT_TRAP, EnumEntity.Entities.TRAP);
 
         Allowed.addDynamicEntity(Optional.of(this));
         getImage();
     }
 
     private void getImage() {
-        stand1 = setup("src" + FS + "main" + FS + "resources" + FS + "items" + FS + "trap.png", this.width+23, this.height+23);
+
+        stand1 = setup("src" + FS + "main" + FS + "resources" + FS + "items" + FS + "trap.png", this.getWidth()+REMOVE_PIXELS_WIDTH, this.getHeight()+REMOVE_PIXELS_HEIGHT);
     }
 
     @Override
     public void draw(Graphics2D g2d){
-        if(working == status.ALIVE){
-            g2d.drawImage(stand1, x, y,null);
+        if(isAlive()){
+            g2d.drawImage(stand1, getX(), getY(),null);
         }
     }
     
